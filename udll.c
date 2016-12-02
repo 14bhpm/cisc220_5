@@ -1,21 +1,30 @@
 #include "udll.h"
 #include <stdlib.h>
 
+/* This function deletes the second node of the list		*
+ * since the data of head is always length(), it's the same	*
+ * as deleting the head	itself								*/
 void removeNodeAtBeginning(){
 	
-	DNode * temp = head;
-	temp = temp->next;
-	head = temp;
-	temp->prev = NULL;
-	
+	if (length() == 1){
+		head = NULL;
+	} else if (length() == 2){
+		free(head->next);
+		head->next = NULL;
+		head->data.intData--;
+	} else {
+		head->next = head->next->next;
+		free(head->next->prev);
+		head->next->prev = head;
+		head->data.intData--;
+	}
 }
 
 void removeNodeAtEnd(){
 	
-	DNode * temp = last;
-	temp = temp->prev;
-	last = temp;
-	temp->next = NULL;
+	last = last->prev;
+	free(last->next);
+	last->next = NULL;
 	
 }
 
@@ -28,28 +37,31 @@ void removeNode(int index){
 	}
 	else
 	{
-		if (index == 0){
+		if (index == 1){
 			removeNodeAtBeginning();
-		} else if (index == (length() - 1)){
+		} else if (index == length()){
 			removeNodeAtEnd();
 		} else {
 			
-			if (abs(length() - index) > abs(0 - index)){
+			/* If index is closer to length() (last index), it starts	*
+			 * a for loop from last going down the list to the index.	*/
+			if (abs(length() - index) < abs(1 - index)){
 			temp = last;
-			for (int i = length(); i>index+1; i--){
+			for (int i = length(); i>(index+1); i--){
 				temp = temp->prev;
 			}
 			temp->prev = temp->prev->prev;
-			temp = temp->prev;
-			temp->next = temp->next->next;
+			free(temp->prev->next);
+			temp->prev->next = temp;
+			
 			} else {
             temp = head;
             for (int i = 0; i<index-1; i++){
 				temp = temp->next;
 			}
 			temp->next = temp->next->next;
-			temp = temp->next;
-			temp->prev = temp->prev->prev;
+			free(temp->next->prev);
+			temp->next->prev = temp;
 			}
 		}
 	}
@@ -170,19 +182,20 @@ void insert(int index, Data data)
     int i;
     DNode * newNode, *temp;	
  
-    if(head == NULL){
+    if(index < 1 || index > length() +1 ){
+        printf("Error, Invalid index index must be between 1 and %d\n", length()+1);
+	}else if(head == NULL){
 		insertAtBeginning(data);
-	}else if(index < 1 || index > head->data.intData+1 ){
-        printf("Error, Invalid index\n");
     }else{
-		if(abs(index - length())<= length()/2){ 
+		// if the index is closer to the head then use the head.
+		if(index <= length()/2){ 
 			temp = head;
 			i=1; 
 			while(i<index-1 && temp!=NULL){
 				temp = temp->next;
 				i++;
 			}
-		}else{
+		}else{  // the last pointer is coser to the index. use the Last
 			temp = last;
 			i=length(); 
 			while(i>index-1 && temp!=NULL){
@@ -190,10 +203,10 @@ void insert(int index, Data data)
 				i--;
 			}
 		}
-		if(temp == head || index == 1){
-            insertAtBeginning(data);
-        } else if (temp == last || index == length()+1){
+		 if(temp == last || index == length()+1){
             insertAtEnd(data);
+        }else if(temp == head || index == 1){
+            insertAtBeginning(data);
         }else if(temp!=NULL){
             newNode = (DNode *)malloc(sizeof(DNode));
             newNode->data = data;

@@ -1,6 +1,4 @@
 #include "udll.h"
-#include <stdlib.h>
-
 /**
  * Inserts a new node at the beginning of the doubly linked list
  *
@@ -8,19 +6,20 @@
  */
 
 int main(){
-	Data data1={10};
+	Data data1={5};
 	Data data2={-10};
 	Data data3={1000};
 	Data data4={-100};
 		
-	insert(0,data1);
-	insert(1,data2);
-	insert(2,data3);
-	insert(3,data4);
-	removeNode(1);
+	insert(1,data1);
+	insert(2,data2);
+	insert(3,data3);
+	insert(4,data4);
+	printf("Length is %d\n",length());
 	displayList();
+	removeNode(3);
+	displayList();
+	//system("pause");
+	return 0;
 
 }
-
-
-
