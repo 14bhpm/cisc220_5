@@ -63,6 +63,7 @@ void removeNode(int index){
 			free(temp->next->prev);
 			temp->next->prev = temp;
 			}
+			head->data.intData--;
 		}
 	}
 	
@@ -72,14 +73,13 @@ union Data get(int index){
 	
 	DNode * temp;
  
-    if(head == NULL)
-    {
+    if(head == NULL){
         printf("List is empty.\n");
-    }
-    else
-	{
+    } else if (length() == 1){
+		return head->data;
+	} else {
 		
-        if (abs(length() - index) > abs(0 - index)){
+        if (abs(length() - index) < abs(1 - index)){
 			temp = last;
 			for (int i = length(); i>index; i--){
 				temp = temp->prev;
@@ -87,7 +87,7 @@ union Data get(int index){
 			return temp->data;
 		} else {
             temp = head;
-            for (int i = 0; i<index; i++){
+            for (int i = 1; i<index; i++){
 				temp = temp->next;
 			}
 			return temp->data;
@@ -147,28 +147,10 @@ void insertAtEnd(Data data)
  */
 void displayList()
 {
-    DNode * temp;
-    int n = 1;
- 
-    if(head == NULL)
-    {
-        printf("List is empty.\n");
-    }
-    else
-    {
-        temp = head;
-        printf("DATA IN THE LIST:\n");
- 
-        while(temp != NULL)
-        {
-            printf("DATA of %d node = %d\n", n, temp->data);
- 
-            n++;
- 
-            /* Moves the current pointer to next node */
-            temp = temp->next;
-        }
-    }
+	for (int i=1; i<=length(); i++){
+		printf("Data of node %d = %d\n", i, get(i));
+	}
+
 }
 
 int length(){
@@ -203,7 +185,7 @@ void insert(int index, Data data)
 				i--;
 			}
 		}
-		 if(temp == last || index == length()+1){
+		if(temp == last || index == length()+1){
             insertAtEnd(data);
         }else if(temp == head || index == 1){
             insertAtBeginning(data);
